@@ -7,11 +7,13 @@ import { CellComponent } from './ng2-smart-table/components/cell/cell.component'
 import { FilterComponent } from './ng2-smart-table/components/filter/filter.component';
 import { PagerComponent } from './ng2-smart-table/components/pager/pager.component';
 import { TitleComponent } from './ng2-smart-table/components/title/title.component';
+import { SortablejsModule } from 'angular-sortablejs';
 
 @NgModule({
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
+    SortablejsModule
   ],
   declarations: [
     CellComponent,

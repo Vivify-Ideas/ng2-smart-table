@@ -34,9 +34,9 @@
 
     </thead>
 
-    <tbody>
+    <tbody [sortablejs]="grid.getRows()" [sortablejsOptions]="options">
 
-    <tr *ngFor="let row of grid.getRows()" (click)="onUserSelectRow(row)" class="ng2-smart-row" [ngClass]="{selected: row.isSelected}">
+    <tr *ngFor="let row of grid.getRows()" (click)="onUserSelectRow(row)" class="ng2-smart-row" [ngClass]="{selected: row.isSelected}" [attr.data-id]="row.data.id">
       <td *ngIf="!row.isInEditing && grid.showActionColumn()" class="ng2-smart-actions">
         <a href="#" *ngIf="grid.getSetting('actions.edit')" class="ng2-smart-action ng2-smart-action-edit-edit" [innerHTML]="grid.getSetting('edit.editButtonContent')" (click)="onEdit(row, $event)"></a>
         <a href="#" *ngIf="grid.getSetting('actions.delete')" class="ng2-smart-action ng2-smart-action-delete-delete" [innerHTML]="grid.getSetting('delete.deleteButtonContent')" (click)="onDelete(row, $event)"></a>

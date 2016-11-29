@@ -3,6 +3,8 @@ import {
   OnChanges
 } from '@angular/core';
 
+import { SortablejsModule, SortablejsOptions } from 'angular-sortablejs';
+
 import { Grid } from './lib/grid';
 import { DataSource } from './lib/data-source/data-source';
 import { Row } from './lib/data-set/row';
@@ -29,7 +31,11 @@ export class Ng2SmartTableComponent implements OnChanges {
   @Output() public deleteConfirm: EventEmitter<any> = new EventEmitter<any>();
   @Output() public editConfirm: EventEmitter<any> = new EventEmitter<any>();
   @Output() public createConfirm: EventEmitter<any> = new EventEmitter<any>();
-  
+
+  @Output() public reorder: EventEmitter<any> = new EventEmitter<any>();
+
+  protected options;
+
   protected grid: Grid;
   protected defaultSettings: Object = {
 
@@ -75,6 +81,26 @@ export class Ng2SmartTableComponent implements OnChanges {
     }
   };
 
+  ngOnInit() {
+    this.options = {
+      animation: 150,
+      store: {
+          get: (sortable) => {
+              let order = localStorage.getItem(sortable.options.group.name);
+              return order ? order.split('|') : [];
+          },
+
+          set: (sortable) => {
+              let order = sortable.toArray();
+              localStorage.setItem(sortable.options.group.name, order.join('|'));
+              this.reorder.emit({
+                reorderedIds: order.join('|')
+              });
+          }
+      }
+    };
+  }
+
   ngOnChanges(changes: {[propertyName: string]: SimpleChange}): void {
     if (this.grid) {
       if (changes['settings']) {
@@ -106,10 +132,10 @@ export class Ng2SmartTableComponent implements OnChanges {
       data: row.getData(),
       source: this.source
     });
-    
+
     this.onSelectRow(row);
   }
-  
+
   onSelectRow(row: Row): void {
     this.grid.selectRow(row);
     this.rowSelect.emit({
@@ -166,14 +192,14 @@ export class Ng2SmartTableComponent implements OnChanges {
     this.grid = new Grid(this.source, this.prepareSettings());
     this.grid.onSelectRow().subscribe((row) => this.onSelectRow(row));
   }
-  
+
   protected prepareSource(): DataSource {
     if (this.source instanceof DataSource) {
       return this.source;
     } else if (this.source instanceof Array) {
       return new LocalDataSource(this.source);
     }
-    
+
     return new LocalDataSource();
   }
 
